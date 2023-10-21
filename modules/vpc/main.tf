@@ -6,10 +6,12 @@ module "security_group" {
 
 # Use the security group ID within your VPC module as needed
 resource "aws_security_group_rule" "my_security_groups" {
+  for_each = var.security_group_rules
+
   type        = "ingress"
-  from_port   = 80
-  to_port     = 80
-  protocol    = "tcp"
+  from_port   = each.value.from_port
+  to_port     = each.value.to_port
+  protocol    = each.value.protocol
   security_group_id = module.security_group.security_group_id
   source_security_group_id = module.security_group.security_group_id
 }
