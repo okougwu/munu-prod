@@ -9,11 +9,11 @@ variable "allowed_ports" {
 variable "allowed_protocols" {
   description = "List of allowed protocols"
   type        = list(string)
-  default     = ["tcp"]
+  default     = ["tcp", "tcp", "tcp", "tcp", "tcp"]
 }
 
 variable "allowed_cidr_blocks" {
   description = "List of allowed CIDR blocks"
   type        = list(string)
-  default     = ["0.0.0.0/0"]
+  default     = ["0.0.0.0/0", "0.0.0.0/0", "0.0.0.0/0", "0.0.0.0/0", "0.0.0.0/0"]
 }

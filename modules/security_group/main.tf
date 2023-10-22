@@ -1,5 +1,6 @@
 resource "aws_security_group" "my_security_groups" {
-  name        = "${var.project_name}-security-group"
+  name        = "${var.project_name}-security-group-${count.index}"
+
   description = "Example security group for your VPC"
 
   count = length(var.allowed_ports)
