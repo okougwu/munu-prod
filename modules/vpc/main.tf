@@ -1,56 +1,47 @@
-
 module "security_group" {
   source       = "../security_group"
   project_name = var.project_name
 }
 
-# Use the security group ID within your VPC module as needed
 resource "aws_security_group_rule" "my_security_groups" {
-  for_each = var.security_group_rules
-
-  type        = "ingress"
-  from_port   = each.value.from_port
-  to_port     = each.value.to_port
-  protocol    = each.value.protocol
-  security_group_id = module.security_group.security_group_id
-  source_security_group_id = module.security_group.security_group_id
+  type               = "ingress"
+  from_port          = 80
+  to_port            = 80
+  protocol           = "tcp"
+  security_group_id  = module.security_group.security_group_id[1]  # Adjust the index as needed
+  source_security_group_id = module.security_group.security_group_id[1]
 }
 
-# create vpc
 resource "aws_vpc" "munateach" {
   cidr_block              = var.vpc_cidr
   instance_tenancy        = "default"
   enable_dns_hostnames    = true
 
-  tags      = {
-    Name    = "${var.project_name}-vpc"
+  tags = {
+    Name = "${var.project_name}-vpc"
   }
 }
 
-# create internet gateway and attach it to vpc
 resource "aws_internet_gateway" "internet_gateway" {
   vpc_id    = aws_vpc.munateach.id
 
-  tags      = {
-    Name    = "${var.project_name}-igw"
+  tags = {
+    Name = "${var.project_name}-igw"
   }
 }
 
-# use data source to get all avalablility zones in region
 data "aws_availability_zones" "available_zones" {}
 
-# create public subnet az1
 resource "aws_subnet" "public_subnet_az1" {
   vpc_id                  = aws_vpc.munateach.id
   cidr_block              = var.public_subnet_az1_cidr
   availability_zone       = data.aws_availability_zones.available_zones.names[0]
   map_public_ip_on_launch = true
 
-  tags      = {
-    Name    = "public_subnet_az1"
+  tags = {
+    Name = "public_subnet_az1"
   }
 }
-
 # create public subnet az2
 resource "aws_subnet" "public_subnet_az2" {
   vpc_id                  = aws_vpc.munateach.id
@@ -136,5 +127,3 @@ resource "aws_subnet" "private_data_subnet_az2" {
     Name    = "private_data_subnet_az2"
   }
 }
-
-
